@@ -1,23 +1,57 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.dikzz</groupId>
-  <artifactId>Soc</artifactId>
-  <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>Soc Maven Webapp</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <build>
-    <finalName>Soc</finalName>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.dikzz</groupId>
+	<artifactId>Soc</artifactId>
+	<packaging>war</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Soc Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<plugin.war.warName>Soc</plugin.war.warName>
+	</properties>
+
+	<dependencies>
+		<!-- *************** TEST *************** -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- *************** MAVEN PROPERTIES PLUGIN *************** -->
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>properties-maven-plugin</artifactId>
+			<version>1.0-alpha-2</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<finalName>Soc</finalName>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>./config.properties</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -27,6 +61,37 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
+			<!-- JBoss AS plugin to deploy the war. -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.4.Final</version>
+				<configuration>
+					<force>true</force>
+					<hostname>${jboss-as.deploy.hostname}</hostname>
+					<username>${jboss-as.deploy.user}</username>
+					<password>${jboss-as.deploy.pass}</password>
+					<fileNames>
+						<fileName>target/${plugin.war.warName}.war</fileName>
+					</fileNames>
+				</configuration>
+
+				<!-- <executions>
+					<execution>
+						<id>start</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+				</executions>-->
+			</plugin>
+
+			<!-- <plugin> <artifactId>maven-antrun-plugin</artifactId> <executions> 
+				<execution> <phase>generate-resources</phase> <goals> <goal>run</goal> </goals> 
+				<configuration> <tasks> <echo>${web.server.path}</echo> </tasks> </configuration> 
+				</execution> </executions> </plugin> -->
 		</plugins>
-  </build>
+	</build>
 </project>
