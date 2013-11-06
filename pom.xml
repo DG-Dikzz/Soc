@@ -76,16 +76,6 @@
 						<fileName>target/${plugin.war.warName}.war</fileName>
 					</fileNames>
 				</configuration>
-
-				<!-- <executions>
-					<execution>
-						<id>start</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-				</executions>-->
 			</plugin>
 
 			<!-- <plugin> <artifactId>maven-antrun-plugin</artifactId> <executions> 
