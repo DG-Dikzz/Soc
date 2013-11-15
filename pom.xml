@@ -10,22 +10,121 @@
 
 	<properties>
 		<plugin.war.warName>Soc</plugin.war.warName>
+
+
+		<!-- Versions -->
+		<junit.lib.version>3.8.1</junit.lib.version>
+		<maven.mojo.plugin.lib.version>1.0-alpha-2</maven.mojo.plugin.lib.version>
+		<jboss.plugin.version>7.4.Final</jboss.plugin.version>
+		<spring.version>3.2.4.RELEASE</spring.version>
+		<resteasy.version>3.0.5.Final</resteasy.version>
+		<log4j.version>1.2.16</log4j.version>
+
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>JBoss repository</id>
+			<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<!-- *************** TEST *************** -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${junit.lib.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- *************** LOGGING *************** -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- *************** MAVEN PROPERTIES PLUGIN *************** -->
 		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>properties-maven-plugin</artifactId>
-			<version>1.0-alpha-2</version>
+			<version>${maven.mojo.plugin.lib.version}</version>
+		</dependency>
+
+		<!-- ************** Spring Dependencies ******************** -->
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- ************* REST Dependencies -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>jaxrs-api</artifactId>
+			<version>2.3.0.GA</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-spring</artifactId>
+			<version>2.3.0.GA</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jaxb-impl</artifactId>
+					<groupId>com.sun.xml.bind</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>sjsxp</artifactId>
+					<groupId>com.sun.xml.stream</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jsr250-api</artifactId>
+					<groupId>javax.annotation</groupId>
+				</exclusion>
+
+				<exclusion>
+					<artifactId>activation</artifactId>
+					<groupId>javax.activation</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
@@ -36,7 +135,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.0-alpha-2</version>
+				<version>${maven.mojo.plugin.lib.version}</version>
 				<executions>
 					<execution>
 						<phase>initialize</phase>
@@ -66,7 +165,7 @@
 			<plugin>
 				<groupId>org.jboss.as.plugins</groupId>
 				<artifactId>jboss-as-maven-plugin</artifactId>
-				<version>7.4.Final</version>
+				<version>${jboss.plugin.version}</version>
 				<configuration>
 					<force>true</force>
 					<hostname>${jboss-as.deploy.hostname}</hostname>
@@ -77,11 +176,6 @@
 					</fileNames>
 				</configuration>
 			</plugin>
-
-			<!-- <plugin> <artifactId>maven-antrun-plugin</artifactId> <executions> 
-				<execution> <phase>generate-resources</phase> <goals> <goal>run</goal> </goals> 
-				<configuration> <tasks> <echo>${web.server.path}</echo> </tasks> </configuration> 
-				</execution> </executions> </plugin> -->
 		</plugins>
 	</build>
 </project>
