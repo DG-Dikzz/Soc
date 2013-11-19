@@ -203,7 +203,7 @@
 
 					<!-- Deploy the JDBC library -->
 					<execution>
-						<id>deploy-driver!!!!!!!!!</id>
+						<id>deploy-driver</id>
 						<phase>install</phase>
 						<configuration>
 							<groupId>mysql</groupId>
@@ -217,7 +217,7 @@
 
 					<!-- Add a data source -->
 					<execution>
-						<id>add-datasource!!!!!!!!!!</id>
+						<id>add-datasource</id>
 						<phase>install</phase>
 						<configuration>
 							<address>subsystem=datasources,data-source=socDatasource</address>
