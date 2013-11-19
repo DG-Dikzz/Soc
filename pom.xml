@@ -11,6 +11,7 @@
 	<properties>
 		<plugin.war.warName>Soc</plugin.war.warName>
 
+		<java.version>1.6</java.version>
 
 		<!-- Versions -->
 		<junit.lib.version>3.8.1</junit.lib.version>
@@ -19,6 +20,7 @@
 		<spring.version>3.2.4.RELEASE</spring.version>
 		<resteasy.version>3.0.5.Final</resteasy.version>
 		<log4j.version>1.2.16</log4j.version>
+		<mysql.driver.version>5.1.27</mysql.driver.version>
 
 	</properties>
 
@@ -30,6 +32,13 @@
 	</repositories>
 
 	<dependencies>
+		<!-- *************** MYSQL DRIVAR *************** -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.18</version>
+		</dependency>
+
 		<!-- *************** TEST *************** -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -156,8 +165,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 
@@ -175,6 +184,72 @@
 						<fileName>target/${plugin.war.warName}.war</fileName>
 					</fileNames>
 				</configuration>
+				<executions>
+
+					<!-- Undeploy on clean -->
+					<execution>
+						<id>undeploy</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>undeploy</goal>
+						</goals>
+						<configuration>
+							<hostname>${jboss-as.deploy.hostname}</hostname>
+							<name>${jboss-as.deploy.user}</name>
+							<password>${jboss-as.deploy.pass}</password>
+							<ignoreMissingDeployment>true</ignoreMissingDeployment>
+						</configuration>
+					</execution>
+
+					<!-- Deploy the JDBC library -->
+					<execution>
+						<id>deploy-driver!!!!!!!!!</id>
+						<phase>install</phase>
+						<configuration>
+							<groupId>mysql</groupId>
+							<artifactId>mysql-connector-java</artifactId>
+							<name>mysql-connector-java-5.1.18-bin.jar</name>
+						</configuration>
+						<goals>
+							<goal>deploy-artifact</goal>
+						</goals>
+					</execution>
+
+					<!-- Add a data source -->
+					<execution>
+						<id>add-datasource!!!!!!!!!!</id>
+						<phase>install</phase>
+						<configuration>
+							<address>subsystem=datasources,data-source=socDatasource</address>
+							<resource>
+								<enableResource>true</enableResource>
+								<properties>
+									<connection-url>jdbc:mysql://localhost:3306/inspection</connection-url>
+									<jndi-name>java:jboss/socDatasource</jndi-name>
+									<enabled>true</enabled>
+									<enable>true</enable>
+									<pool-name>myPool</pool-name>
+									<user-name>root</user-name>
+									<password>dikzz</password>
+									<driver-name>mysql-connector-java-5.1.18-bin.jar</driver-name>
+									<use-ccm>false</use-ccm>
+								</properties>
+							</resource>
+						</configuration>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+					</execution>
+
+					<!-- Deploy the application on install -->
+					<execution>
+						<id>deploy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
