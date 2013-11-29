@@ -20,8 +20,10 @@
 		<spring.version>3.2.4.RELEASE</spring.version>
 		<resteasy.version>3.0.5.Final</resteasy.version>
 		<log4j.version>1.2.16</log4j.version>
-		<mysql.driver.version>5.1.27</mysql.driver.version>
-
+		<mysql.driver.version>5.1.18</mysql.driver.version>
+		<hibernate.version>4.2.7.Final</hibernate.version>
+		<hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>
+		<hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
 	</properties>
 
 	<repositories>
@@ -32,27 +34,12 @@
 	</repositories>
 
 	<dependencies>
-		<!-- *************** MYSQL DRIVAR *************** -->
+
+		<!-- *************** MYSQL DRIVER *************** -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.18</version>
-		</dependency>
-
-		<!-- *************** TEST *************** -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.lib.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- *************** LOGGING *************** -->
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-			<scope>runtime</scope>
+			<version>${mysql.driver.version}</version>
 		</dependency>
 
 		<!-- *************** MAVEN PROPERTIES PLUGIN *************** -->
@@ -90,6 +77,46 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- ************* HIBERNATE **************** -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>${hibernate.jpa.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate.validator.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<!-- ************* REST Dependencies -->
@@ -140,6 +167,12 @@
 
 	<build>
 		<finalName>Soc</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources/</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -194,9 +227,6 @@
 							<goal>undeploy</goal>
 						</goals>
 						<configuration>
-							<hostname>${jboss-as.deploy.hostname}</hostname>
-							<name>${jboss-as.deploy.user}</name>
-							<password>${jboss-as.deploy.pass}</password>
 							<ignoreMissingDeployment>true</ignoreMissingDeployment>
 						</configuration>
 					</execution>
@@ -224,15 +254,13 @@
 							<resource>
 								<enableResource>true</enableResource>
 								<properties>
-									<connection-url>jdbc:mysql://localhost:3306/inspection</connection-url>
-									<jndi-name>java:jboss/socDatasource</jndi-name>
+									<connection-url>${database.connectionurl}</connection-url>
+									<jndi-name>${database.jndi.name}</jndi-name>
 									<enabled>true</enabled>
 									<enable>true</enable>
-									<pool-name>myPool</pool-name>
-									<user-name>root</user-name>
-									<password>dikzz</password>
+									<user-name>${database.username}</user-name>
+									<password>${database.password}</password>
 									<driver-name>mysql-connector-java-5.1.18-bin.jar</driver-name>
-									<use-ccm>false</use-ccm>
 								</properties>
 							</resource>
 						</configuration>
