@@ -1,5 +1,7 @@
 package com.dikzz.soc.service;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,5 +38,16 @@ public class TestService {
 		in.setName(name);
 		testDao.addTestDao(in);
 		return "Done";
+	}
+	
+	@GET
+	@Path("/all")
+	public String getAll() {
+		List<TestTable> all = testDao.getAll();
+		StringBuilder result = new StringBuilder();
+		for(TestTable testTable : all) {
+			result.append(testTable.toString()).append("\n");
+		}
+		return result.toString();
 	}
 }
