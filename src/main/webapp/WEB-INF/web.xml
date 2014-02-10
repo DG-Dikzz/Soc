@@ -30,6 +30,11 @@
 		<param-value>/api</param-value>
 	</context-param>
 	
+	<!-- <context-param>
+		<param-name>resteasy.resources</param-name>
+		<param-value>com.mkyong.rest.JSONService</param-value>
+	</context-param> -->
+	
 	<!-- Spring Security -->
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
