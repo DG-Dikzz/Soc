@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
-import org.springframework.social.facebook.api.Facebook;
-import org.springframework.social.facebook.api.FacebookProfile;
+import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Operations;
 import org.springframework.social.oauth1.OAuth1Parameters;
+import org.springframework.social.oauth1.OAuthToken;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Repository;
@@ -17,42 +17,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TwitterManager {
 	
-	private static final String REDIRECT_URL = "https://api.twitter.com/oauth/authorize";//"http://localhost:8080/Soc/api/test/twitterAuthorization";
-	/*@Autowired
-	private Facebook facebook;*/
+	private static final String REDIRECT_URL = "http://localhost:8080/Soc/api/test/twitterAuthorization";
 	
 	@Autowired
 	private ConnectionFactoryRegistry connectionFactoryLocator;
 	private TwitterConnectionFactory twitterСonnectionFactory;
+	private Connection<Twitter> connection;
 	
-	//private String accessCode;
-	private Connection<Facebook> connection;
-	//OAuth2Operations oauthOperations;
+	private OAuthToken oAuthToken;
 	
-	public void setAccessCode(String accessCode) {
-		//this.accessCode = accessCode;
-		/*OAuth1Operations oauthOperations = twitterСonnectionFactory.getOAuthOperations();
-		AccessGrant accessGrant = oauthOperations.exchangeForAccess(accessCode, REDIRECT_URL, null);
-		connection = facebookСonnectionFactory.createConnection(accessGrant);*/
-	}
-
 	@PostConstruct
 	public void initConnections() {
 		twitterСonnectionFactory = (TwitterConnectionFactory) connectionFactoryLocator.getConnectionFactory(Twitter.class);
-	}
-	
-	/*public FacebookConnectionFactory getFacebookConnectionFactory() {
-		return connectionFactory;
-		//return facebook;
-	}*/
-	
-	public FacebookProfile test() {
-		FacebookProfile facebookProfile = connection.getApi().userOperations().getUserProfile("100007652822243");
-		return facebookProfile;
-	}
-	
-	public void updateStatus(String status) {
-		connection.getApi().feedOperations().updateStatus(status);
 	}
 	
 	public String getFullName() {
@@ -62,16 +38,16 @@ public class TwitterManager {
 	
 	public String getAuthorizationUrl() {
 		OAuth1Operations oauthOperations = twitterСonnectionFactory.getOAuthOperations();
-		//OAuthToken requestToken = oauthOperations.fetchRequestToken(REDIRECT_URL, null);
-		return oauthOperations.buildAuthorizeUrl(REDIRECT_URL, OAuth1Parameters.NONE);
-		/*OAuth2Operations oauthOperations = facebookСonnectionFactory.getOAuthOperations();
-		OAuth2Parameters params = new OAuth2Parameters();
-		params.setRedirectUri(REDIRECT_URL);
-		params.setScope("user_status, friends_status, export_stream, publish_actions, status_update");
-		return oauthOperations.buildAuthorizeUrl(GrantType.AUTHORIZATION_CODE, params);*/
+		oAuthToken = oauthOperations.fetchRequestToken(REDIRECT_URL, null);
+		OAuth1Parameters oAuth1Parameters = new OAuth1Parameters();
+		oAuth1Parameters.setCallbackUrl(REDIRECT_URL);
+		return oauthOperations.buildAuthorizeUrl(oAuthToken.getValue(), oAuth1Parameters);
 	}
 	
-	public UserProfile getUserProfile() {
-		return connection.fetchUserProfile();
+	public void setAccessCode(String accessCode, String oAuthVerifier) {
+		OAuth1Operations oauthOperations = twitterСonnectionFactory.getOAuthOperations();
+		AuthorizedRequestToken authorizedRequestToken = new AuthorizedRequestToken(oAuthToken, oAuthVerifier);
+		OAuthToken accessToken = oauthOperations.exchangeForAccessToken(authorizedRequestToken, null);
+		connection = twitterСonnectionFactory.createConnection(accessToken);
 	}
 }

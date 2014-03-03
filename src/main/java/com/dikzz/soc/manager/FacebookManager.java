@@ -19,32 +19,22 @@ import org.springframework.stereotype.Repository;
 public class FacebookManager {
 	
 	private static final String REDIRECT_URL = "http://localhost:8080/Soc/api/test/facebookAuthorization";
-	/*@Autowired
-	private Facebook facebook;*/
 	
 	@Autowired
 	private ConnectionFactoryRegistry connectionFactoryLocator;
 	private FacebookConnectionFactory connectionFactory;
-	//private String accessCode;
 	private Connection<Facebook> connection;
-	//OAuth2Operations oauthOperations;
 	
-	public void setAccessCode(String accessCode) {
-		//this.accessCode = accessCode;
-		OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
-		AccessGrant accessGrant = oauthOperations.exchangeForAccess(accessCode, REDIRECT_URL, null);
-		connection = connectionFactory.createConnection(accessGrant);
-	}
-
 	@PostConstruct
 	public void initConnections() {
 		connectionFactory = (FacebookConnectionFactory) connectionFactoryLocator.getConnectionFactory(Facebook.class);
 	}
 	
-	/*public FacebookConnectionFactory getFacebookConnectionFactory() {
-		return connectionFactory;
-		//return facebook;
-	}*/
+	public void setAccessCode(String accessCode) {
+		OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
+		AccessGrant accessGrant = oauthOperations.exchangeForAccess(accessCode, REDIRECT_URL, null);
+		connection = connectionFactory.createConnection(accessGrant);
+	}
 	
 	public FacebookProfile test() {
 		FacebookProfile facebookProfile = connection.getApi().userOperations().getUserProfile("100007652822243");

@@ -7,7 +7,9 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,14 +90,16 @@ public class TestService {
 	
 	@GET
 	@Path("/twitterAuthorization")
-	public Response twitterAuthorization(@QueryParam("code") String code) {
-		if(code != null) {
-			/*facebookManager.setAccessCode(code);
-			return Response.ok(facebookManager.getUserProfile().getFirstName()).build();*/
-			return Response.ok("Ok").build();
+	public Response twitterAuthorization(
+			@QueryParam("oauth_token") String oAuthToken,
+			@QueryParam("oauth_verifier") String oAuthVerifier) {
+		if (oAuthToken != null) {
+			twitterManager.setAccessCode(oAuthToken, oAuthVerifier);
+			return Response.ok(twitterManager.getFullName()).build();
 		} else {
 			try {
-				return Response.temporaryRedirect(new URI(twitterManager.getAuthorizationUrl())).build();
+				return Response.temporaryRedirect(
+						new URI(twitterManager.getAuthorizationUrl())).build();
 			} catch (URISyntaxException e) {
 				throw new RuntimeException(e);
 			}
@@ -107,5 +111,19 @@ public class TestService {
 	public String test() {
 		FacebookProfile facebookProfile = facebookManager.test();
 		return facebookProfile.getFirstName() + " " + facebookProfile.getLastName();
+	}
+	
+	@GET
+	@Path("/message")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String mesage() {
+		return "message";
+	}
+	
+	@GET
+	@Path("/dikzz")
+	public String testr() {
+
+	    return "Wrong";
 	}
 }
