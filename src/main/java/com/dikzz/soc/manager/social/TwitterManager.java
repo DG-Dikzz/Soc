@@ -1,4 +1,4 @@
-package com.dikzz.soc.manager;
+package com.dikzz.soc.manager.social;
 
 import javax.annotation.PostConstruct;
 
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TwitterManager {
 	
-	private static final String REDIRECT_URL = "http://localhost:8080/Soc/api/test/twitterAuthorization";
+	private static final String REDIRECT_URL = "http://localhost:8080/Soc/api/twitter";
 	
 	@Autowired
-	private ConnectionFactoryRegistry connectionFactoryLocator;
+	private ConnectionFactoryRegistry connectionFactoryLocatorSocial;
 	private TwitterConnectionFactory twitterСonnectionFactory;
 	private Connection<Twitter> connection;
 	
@@ -28,7 +28,7 @@ public class TwitterManager {
 	
 	@PostConstruct
 	public void initConnections() {
-		twitterСonnectionFactory = (TwitterConnectionFactory) connectionFactoryLocator.getConnectionFactory(Twitter.class);
+		twitterСonnectionFactory = (TwitterConnectionFactory) connectionFactoryLocatorSocial.getConnectionFactory(Twitter.class);
 	}
 	
 	public String getFullName() {

@@ -1,4 +1,4 @@
-package com.dikzz.soc.manager;
+package com.dikzz.soc.manager.social;
 
 import javax.annotation.PostConstruct;
 
@@ -17,47 +17,53 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class FacebookManager {
-	
-	private static final String REDIRECT_URL = "http://localhost:8080/Soc/api/test/facebookAuthorization";
-	
+
+	private static final String REDIRECT_URL = "http://localhost:8080/Soc/api/facebook";
+
 	@Autowired
-	private ConnectionFactoryRegistry connectionFactoryLocator;
+	private ConnectionFactoryRegistry connectionFactoryLocatorSocial;
 	private FacebookConnectionFactory connectionFactory;
 	private Connection<Facebook> connection;
-	
+
 	@PostConstruct
 	public void initConnections() {
-		connectionFactory = (FacebookConnectionFactory) connectionFactoryLocator.getConnectionFactory(Facebook.class);
+		connectionFactory = (FacebookConnectionFactory) connectionFactoryLocatorSocial
+				.getConnectionFactory(Facebook.class);
 	}
-	
+
 	public void setAccessCode(String accessCode) {
-		OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
-		AccessGrant accessGrant = oauthOperations.exchangeForAccess(accessCode, REDIRECT_URL, null);
+		OAuth2Operations oauthOperations = connectionFactory
+				.getOAuthOperations();
+		AccessGrant accessGrant = oauthOperations.exchangeForAccess(accessCode,
+				REDIRECT_URL, null);
 		connection = connectionFactory.createConnection(accessGrant);
 	}
-	
+
 	public FacebookProfile test() {
-		FacebookProfile facebookProfile = connection.getApi().userOperations().getUserProfile("100007652822243");
+		FacebookProfile facebookProfile = connection.getApi().userOperations()
+				.getUserProfile("100007652822243");
 		return facebookProfile;
 	}
-	
+
 	public void updateStatus(String status) {
 		connection.getApi().feedOperations().updateStatus(status);
 	}
-	
+
 	public String getFullName() {
 		UserProfile userProfile = connection.fetchUserProfile();
 		return userProfile.getFirstName() + " " + userProfile.getLastName();
 	}
-	
+
 	public String getAuthorizationUrl() {
-		OAuth2Operations oauthOperations = connectionFactory.getOAuthOperations();
+		OAuth2Operations oauthOperations = connectionFactory
+				.getOAuthOperations();
 		OAuth2Parameters params = new OAuth2Parameters();
 		params.setRedirectUri(REDIRECT_URL);
 		params.setScope("user_status, friends_status, export_stream, publish_actions, status_update");
-		return oauthOperations.buildAuthorizeUrl(GrantType.AUTHORIZATION_CODE, params);
+		return oauthOperations.buildAuthorizeUrl(GrantType.AUTHORIZATION_CODE,
+				params);
 	}
-	
+
 	public UserProfile getUserProfile() {
 		return connection.fetchUserProfile();
 	}

@@ -12,10 +12,9 @@
                            http://www.springframework.org/schema/jee
                            http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-	<!-- <bean id="facebook" class="org.springframework.social.facebook.api.impl.FacebookTemplate"> 
-		<constructor-arg value="${social.facebook.access.token}" /> </bean> -->
-
-	<bean id="connectionFactoryLocator"
+    <!-- TODO HACK -->
+    <!-- <bean id="vkClientId" class="java.lang.String" value="${vk.app.id}" /> -->
+	<bean id="connectionFactoryLocatorSocial"
 		class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
 		<property name="connectionFactories">
 			<list>
@@ -32,5 +31,4 @@
 			</list>
 		</property>
 	</bean>
-
 </beans>
