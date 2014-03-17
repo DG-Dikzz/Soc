@@ -12,18 +12,7 @@
                            http://www.springframework.org/schema/jee
                            http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    
-    
-    <!-- <context:property-placeholder location="classpath*:config.properties" />  -->
-     <!-- <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-            <value>classpath*:config.properties</value>
-        </property>
-    </bean>
-    
-    <context:property-placeholder location="classpath*:config.properties"/>
-    -->
-    
+    <context:property-placeholder location="/config.properties" />
     
     
 	<context:annotation-config />
@@ -40,8 +29,7 @@
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 	<bean id="testDao" class="com.dikzz.soc.dao.TestDaoImpl" />
-	
-	
+ 
 	<import resource="spring-security.xml" />
 	<import resource="social-media.xml" />
 

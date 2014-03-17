@@ -12,9 +12,7 @@
                            http://www.springframework.org/schema/jee
                            http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-    <!-- TODO HACK -->
-    <!-- <bean id="vkClientId" class="java.lang.String" value="${vk.app.id}" /> -->
-	<bean id="connectionFactoryLocatorSocial"
+  <bean id="connectionFactoryLocatorSocial"
 		class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
 		<property name="connectionFactories">
 			<list>

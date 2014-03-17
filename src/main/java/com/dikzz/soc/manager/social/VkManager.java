@@ -9,7 +9,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +23,8 @@ import com.google.common.base.Throwables;
 public class VkManager {
 
 	
-	//@Qualifier("vkClientId")
-	private String vkClientId;
+	@Value("${vk.app.id}")
+	private String vkAppId;
 	
 	private AccessTokenDto accessTokenDto;
 
@@ -38,7 +37,7 @@ public class VkManager {
 	private final static String ACCOUNT_GET_PROFILE_INFO = "account.getProfileInfo";
 
 	public String getAuthorizationUrl() {
-		return MessageFormat.format(AUTH_URL, "4236606", VK_SCOPE_ALL,
+		return MessageFormat.format(AUTH_URL, vkAppId, VK_SCOPE_ALL,
 				CALLBACK_URL, VK_AUTHORIZATION_DISPLAY, VK_API_VERSION);
 	}
 
@@ -89,9 +88,5 @@ public class VkManager {
 				!Strings.isNullOrEmpty(parameters) ? parameters : "",
 				!Strings.isNullOrEmpty(parameters) ? "&" : "",
 				accessTokenDto.getAccessToken());
-	}
-	
-	public String getClientId() {
-		return vkClientId;
 	}
 }

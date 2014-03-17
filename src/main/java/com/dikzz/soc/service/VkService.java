@@ -43,10 +43,4 @@ public class VkService {
 		UserProfileDto userProfileDto = vkManager.getUserProfile();
 		return userProfileDto;
 	}
-	
-	@GET
-	@Path("/clientId")
-	public String getUser() {
-		return vkManager.getClientId();
-	}
 }

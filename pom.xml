@@ -278,6 +278,7 @@
 				<version>${maven.mojo.plugin.lib.version}</version>
 				<executions>
 					<execution>
+					    <id>read</id>
 						<phase>initialize</phase>
 						<goals>
 							<goal>read-project-properties</goal>
@@ -286,6 +287,17 @@
 							<files>
 								<file>./config.properties</file>
 							</files>
+						</configuration>
+					</execution>
+					
+					<execution>
+					    <id>write</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>write-project-properties</goal>
+						</goals>
+						<configuration>
+						    <outputFile>./src/main/webapp/config.properties</outputFile>
 						</configuration>
 					</execution>
 				</executions>
