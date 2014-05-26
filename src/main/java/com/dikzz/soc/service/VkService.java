@@ -3,6 +3,7 @@ package com.dikzz.soc.service;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -11,16 +12,26 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dikzz.soc.dto.vk.account.UserProfileDto;
+import com.dikzz.soc.CommunityManagerConfiguration;
+import com.dikzz.soc.manager.social.CommunityType;
 import com.dikzz.soc.manager.social.VkManager;
 
 @Service
 @Path("/vk")
 public class VkService {
 
+	
 	@Autowired
+	private CommunityManagerConfiguration communityManagerConfiguration;
+	
 	private VkManager vkManager;
 	
+	@PostConstruct
+	private void initTwitterManager() {
+		vkManager = (VkManager) communityManagerConfiguration.getSocialManager(CommunityType.VK);
+	}
+
+
 	@GET
 	public Response vkAuthorization() {
 		try {
@@ -30,17 +41,39 @@ public class VkService {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@GET
 	@Path("/applyAccessToken")
-	public void applyAccessToken(@QueryParam("code") String code) {
-		vkManager.setAccessCode1(code);
+	public Response applyAccessToken(@QueryParam("code") String code) {
+		vkManager.setAccessCode(code);
+		return Response.ok(Response.Status.OK).build();
 	}
-	
-	@GET
-	@Path("/userProfile")
-	public UserProfileDto getUserProfile() {
-		UserProfileDto userProfileDto = vkManager.getUserProfile();
-		return userProfileDto;
-	}
+
+	/*
+	 * @GET
+	 * 
+	 * @Path("/groups")
+	 * 
+	 * @Produces(MediaType.APPLICATION_JSON) public List<GroupDto>
+	 * getGroups(@QueryParam("query") String query,
+	 * 
+	 * @QueryParam("offset") Integer offset,
+	 * 
+	 * @QueryParam("count") Integer count) { List<GroupDto> groups =
+	 * vkManager.getGroups(new GroupRequestBuilder(
+	 * Strings.nullToEmpty(query)).setOffset(offset).setCount(count) .build());
+	 * return groups; }
+	 */
+
+	/*
+	 * @GET
+	 * 
+	 * @Path("/allGroups")
+	 * 
+	 * @Produces(MediaType.APPLICATION_JSON) public List<SocialCommunity<?>>
+	 * getGroups() { List<SocialCommunity<?>> list = new
+	 * ArrayList<SocialCommunity<?>>(); GroupDto dto = new GroupDto();
+	 * dto.setName("this is description"); dto.setScreen_name("this is name");
+	 * list.add(CommunityType.VK.getInstance(dto)); return list; }
+	 */
 }

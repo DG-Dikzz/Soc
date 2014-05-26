@@ -2,30 +2,35 @@ package com.dikzz.soc.manager.social;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.dikzz.soc.dto.api.SocialCommunity;
 import com.dikzz.soc.dto.vk.AccessTokenDto;
-import com.dikzz.soc.dto.vk.ResponceDto;
+import com.dikzz.soc.dto.vk.ResponseDto;
 import com.dikzz.soc.dto.vk.account.UserProfileDto;
+import com.dikzz.soc.dto.vk.groups.GroupDto;
+import com.dikzz.soc.dto.vk.groups.GroupsSearchDto;
+import com.dikzz.soc.request.vk.GroupRequestBuilder;
+import com.dikzz.soc.request.vk.GroupRequestBuilder.GroupRequest;
+import com.dikzz.soc.utils.RestUtils;
+import com.dikzz.soc.utils.RestUtils.ResponseHandler;
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 @Repository
-public class VkManager {
+public class VkManager implements SocialManager {
 
-	
 	@Value("${vk.app.id}")
 	private String vkAppId;
-	
+
 	private AccessTokenDto accessTokenDto;
 
 	private final static String CALLBACK_URL = "https://oauth.vk.com/blank.html";
@@ -41,7 +46,7 @@ public class VkManager {
 				CALLBACK_URL, VK_AUTHORIZATION_DISPLAY, VK_API_VERSION);
 	}
 
-	public void setAccessCode1(String accessCode) {
+	public void setAccessCode(String accessCode) {
 		// TODO set also other properties
 		accessTokenDto = new AccessTokenDto();
 		accessTokenDto.setAccessToken(accessCode);
@@ -50,36 +55,50 @@ public class VkManager {
 	public UserProfileDto getUserProfile() {
 
 		String requestUrl = getVkMethodRequest(ACCOUNT_GET_PROFILE_INFO, "");
-		try {
-			CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpGet httpget = new HttpGet(requestUrl);
 
-			CloseableHttpResponse response = httpClient.execute(httpget);
+		return RestUtils.request(requestUrl,
+				new ResponseHandler<UserProfileDto>() {
 
-			ObjectMapper objectMapper = new ObjectMapper();
+					@Override
+					public UserProfileDto handle(ResponseDto responseDto)
+							throws JsonParseException, JsonMappingException,
+							IOException {
+						UserProfileDto userProfileDto = null;
+						if (!responseDto.hasError()) {
+							ObjectMapper objectMapper = new ObjectMapper();
+							userProfileDto = objectMapper.readValue(
+									responseDto.getResponce(),
+									UserProfileDto.class);
+						}
+						return userProfileDto;
+					}
+				});
+	}
 
-			/*
-			 * BufferedReader br = new BufferedReader( new
-			 * InputStreamReader((response.getEntity().getContent())));
-			 * StringBuilder r = new StringBuilder(); String output; while
-			 * ((output = br.readLine()) != null) { r.append(output); }
-			 */
-			
+	private List<GroupDto> getGroups(String request) {
 
-			ResponceDto result = objectMapper.readValue(response.getEntity()
-					.getContent(), ResponceDto.class);
-			UserProfileDto userProfileDto = null;
-			if (!result.hasError()) {
-				userProfileDto = objectMapper.readValue(result.getResponce(),
-						UserProfileDto.class);
-			}
-			return userProfileDto;
-		} catch (ClientProtocolException e) {
-			Throwables.propagate(e);
-		} catch (IOException e) {
-			Throwables.propagate(e);
-		}
-		return null;
+		String requestUrl = getVkMethodRequest(GroupRequest.GROUP_SEARCH,
+				request);
+		return RestUtils.request(requestUrl,
+				new ResponseHandler<List<GroupDto>>() {
+
+					@Override
+					public List<GroupDto> handle(ResponseDto responseDto)
+							throws JsonParseException, JsonMappingException,
+							IOException {
+						GroupsSearchDto groupsSearchDto = null;
+						if (!responseDto.hasError()) {
+							ObjectMapper objectMapper = new ObjectMapper();
+							groupsSearchDto = objectMapper.readValue(
+									responseDto.getResponce(),
+									GroupsSearchDto.class);
+
+						}
+						return groupsSearchDto.getItems();
+					}
+
+				});
+
 	}
 
 	private String getVkMethodRequest(String method, String parameters) {
@@ -88,5 +107,24 @@ public class VkManager {
 				!Strings.isNullOrEmpty(parameters) ? parameters : "",
 				!Strings.isNullOrEmpty(parameters) ? "&" : "",
 				accessTokenDto.getAccessToken());
+	}
+
+	@Override
+	public List<SocialCommunity<?>> getCommunities(String query,
+			Integer page) {
+		List<GroupDto> groupDtos = getGroups(new GroupRequestBuilder(
+				Strings.nullToEmpty(query)).setOffset(PAGE_COUNT * page).setCount(PAGE_COUNT)
+				.build());
+
+		return Lists.transform(groupDtos,
+				new Function<GroupDto, SocialCommunity<?>>() {
+
+					@Override
+					public SocialCommunity<?> apply(GroupDto object) {
+						return CommunityType.VK
+								.getSocialCommunityInstance(object);
+
+					}
+				});
 	}
 }

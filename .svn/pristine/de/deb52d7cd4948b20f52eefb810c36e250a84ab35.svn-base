@@ -12,7 +12,7 @@
                            http://www.springframework.org/schema/jee
                            http://www.springframework.org/schema/jee/spring-jee.xsd">
 
-	<bean id="connectionFactoryLocatorSocial"
+  <bean id="connectionFactoryLocatorSocial"
 		class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
 		<property name="connectionFactories">
 			<list>
@@ -27,22 +27,6 @@
 					<constructor-arg value="${social.twitter.consumerSecret}" />
 				</bean>
 			</list>
-		</property>
-	</bean>
-
-	<bean id="socialManagerConfiguration" class="com.dikzz.soc.CommunityManagerConfiguration">
-		<property name="socialManagers">
-			<map>
-				<entry key="VK"> 
-				    <bean id="vkManager" class="com.dikzz.soc.manager.social.VkManager" />
-				</entry>
-				<entry key="FACEBOOK"> 
-				    <bean id="facebookManager" class="com.dikzz.soc.manager.social.FacebookManager" />
-				</entry>
-				<entry key="TWITTER"> 
-				    <bean id="twitterManager" class="com.dikzz.soc.manager.social.TwitterManager" />
-				</entry>
-			</map>
 		</property>
 	</bean>
 </beans>

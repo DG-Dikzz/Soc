@@ -3,16 +3,17 @@ package com.dikzz.soc.service;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.facebook.api.FacebookProfile;
 import org.springframework.stereotype.Service;
 
+import com.dikzz.soc.CommunityManagerConfiguration;
+import com.dikzz.soc.manager.social.CommunityType;
 import com.dikzz.soc.manager.social.FacebookManager;
 
 @Service
@@ -20,14 +21,28 @@ import com.dikzz.soc.manager.social.FacebookManager;
 public class FacebookService {
 
 	@Autowired
+	private CommunityManagerConfiguration communityManagerConfiguration;
+	
 	private FacebookManager facebookManager;
 	
+	@PostConstruct
+	private void initTwitterManager() {
+		facebookManager = (FacebookManager) communityManagerConfiguration.getSocialManager(CommunityType.FACEBOOK);
+	}
+
+	/*@Autowired
+	private CommunityManagerConfiguration socialManagerConfiguration;
+	
+	@PostConstruct
+	private void getManager() {
+		
+	}*/
+
 	@GET
 	public Response facebookAuthorization(@QueryParam("code") String code) {
 		if (code != null) {
 			facebookManager.setAccessCode(code);
-			return Response.ok(facebookManager.getUserProfile().getFirstName())
-					.build();
+			return Response.ok(Response.Status.OK).build();
 		} else {
 			try {
 				return Response.temporaryRedirect(
@@ -38,24 +53,14 @@ public class FacebookService {
 		}
 	}
 
-	@GET
-	@Path("/status/{uu}")
-	public Object updateStatus(@PathParam("uu") String uu) {
-		facebookManager.updateStatus(uu);
-		return uu;
-	}
-
-	@GET
-	@Path("/fullName")
-	public Object fullName() {
-		return facebookManager.getFullName();
-	}
-	
-	@GET
-	@Path("/test")
-	public String test() {
-		FacebookProfile facebookProfile = facebookManager.test();
-		return facebookProfile.getFirstName() + " "
-				+ facebookProfile.getLastName();
-	}
+	/*
+	 * @GET
+	 * 
+	 * @Path("/groups")
+	 * 
+	 * @Produces(MediaType.APPLICATION_JSON) public List<Group>
+	 * getGroups(@QueryParam("query") String query, @QueryParam("offset")
+	 * Integer offset, @QueryParam("count") Integer count) { return
+	 * facebookManager.getGroups(query, offset, count); }
+	 */
 }
