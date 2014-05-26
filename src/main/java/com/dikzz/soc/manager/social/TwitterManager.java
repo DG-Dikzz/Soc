@@ -37,7 +37,7 @@ public class TwitterManager implements SocialManager {
 	private OAuthToken oAuthToken;
 	
 	/**
-	 * Used for defination last page result. 
+	 * HACK Used for defination last page result. 
 	 * For some reasone in twitter api even you request unexisting page it returns last existing page.
 	 */
 	private Set<Long> lastUsersResponseSnapshot = Sets.newHashSet();
