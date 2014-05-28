@@ -1,10 +1,10 @@
-package com.dikzz.soc.dto.vk;
+package com.dikzz.soc.dto.facebook;
 
 import java.text.MessageFormat;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class AccessTokenDto {
+public class VkAccessTokenDto {
 	@JsonProperty(value = "access_token")
 	private String accessToken;
 	@JsonProperty(value = "expires_in")
@@ -12,11 +12,11 @@ public class AccessTokenDto {
 	@JsonProperty(value = "user_id")
 	private String userId;
 
-	public AccessTokenDto() {
+	public VkAccessTokenDto() {
 
 	}
 
-	public AccessTokenDto(String accessToken, String expiresIn, String userId) {
+	public VkAccessTokenDto(String accessToken, String expiresIn, String userId) {
 		this.accessToken = accessToken;
 		this.expiresIn = expiresIn;
 		this.userId = userId;

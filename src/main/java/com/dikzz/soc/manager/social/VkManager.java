@@ -1,6 +1,7 @@
 package com.dikzz.soc.manager.social;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.dikzz.soc.dto.api.SocialCommunity;
-import com.dikzz.soc.dto.vk.AccessTokenDto;
+import com.dikzz.soc.dto.vk.FacebookAccessTokenDto;
 import com.dikzz.soc.dto.vk.ResponseDto;
 import com.dikzz.soc.dto.vk.account.UserProfileDto;
 import com.dikzz.soc.dto.vk.groups.GroupDto;
@@ -31,7 +32,7 @@ public class VkManager implements SocialManager {
 	@Value("${vk.app.id}")
 	private String vkAppId;
 
-	private AccessTokenDto accessTokenDto;
+	private FacebookAccessTokenDto accessTokenDto;
 
 	private final static String CALLBACK_URL = "https://oauth.vk.com/blank.html";
 	private final static String VK_SCOPE_ALL = "9999999";
@@ -48,7 +49,7 @@ public class VkManager implements SocialManager {
 
 	public void setAccessCode(String accessCode) {
 		// TODO set also other properties
-		accessTokenDto = new AccessTokenDto();
+		accessTokenDto = new FacebookAccessTokenDto();
 		accessTokenDto.setAccessToken(accessCode);
 	}
 
@@ -60,12 +61,15 @@ public class VkManager implements SocialManager {
 				new ResponseHandler<UserProfileDto>() {
 
 					@Override
-					public UserProfileDto handle(ResponseDto responseDto)
+					public UserProfileDto handle(InputStream inputStream)
 							throws JsonParseException, JsonMappingException,
 							IOException {
+						ObjectMapper objectMapper = new ObjectMapper();
+						ResponseDto responseDto = RestUtils
+								.convertToVKResponse(inputStream, objectMapper);
 						UserProfileDto userProfileDto = null;
 						if (!responseDto.hasError()) {
-							ObjectMapper objectMapper = new ObjectMapper();
+
 							userProfileDto = objectMapper.readValue(
 									responseDto.getResponce(),
 									UserProfileDto.class);
@@ -83,12 +87,14 @@ public class VkManager implements SocialManager {
 				new ResponseHandler<List<GroupDto>>() {
 
 					@Override
-					public List<GroupDto> handle(ResponseDto responseDto)
+					public List<GroupDto> handle(InputStream inputStream)
 							throws JsonParseException, JsonMappingException,
 							IOException {
+						ObjectMapper objectMapper = new ObjectMapper();
+						ResponseDto responseDto = RestUtils
+								.convertToVKResponse(inputStream, objectMapper);
 						GroupsSearchDto groupsSearchDto = null;
 						if (!responseDto.hasError()) {
-							ObjectMapper objectMapper = new ObjectMapper();
 							groupsSearchDto = objectMapper.readValue(
 									responseDto.getResponce(),
 									GroupsSearchDto.class);
@@ -110,11 +116,10 @@ public class VkManager implements SocialManager {
 	}
 
 	@Override
-	public List<SocialCommunity<?>> getCommunities(String query,
-			Integer page) {
+	public List<SocialCommunity<?>> getCommunities(String query, Integer page) {
 		List<GroupDto> groupDtos = getGroups(new GroupRequestBuilder(
-				Strings.nullToEmpty(query)).setOffset(PAGE_COUNT * page).setCount(PAGE_COUNT)
-				.build());
+				Strings.nullToEmpty(query)).setOffset(PAGE_COUNT * page)
+				.setCount(PAGE_COUNT).build());
 
 		return Lists.transform(groupDtos,
 				new Function<GroupDto, SocialCommunity<?>>() {
