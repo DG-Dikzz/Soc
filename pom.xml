@@ -223,6 +223,12 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
 		<!-- TOOLS -->
 
 
@@ -278,7 +284,7 @@
 				<version>${maven.mojo.plugin.lib.version}</version>
 				<executions>
 					<execution>
-					    <id>read</id>
+						<id>read</id>
 						<phase>initialize</phase>
 						<goals>
 							<goal>read-project-properties</goal>
@@ -289,15 +295,15 @@
 							</files>
 						</configuration>
 					</execution>
-					
+
 					<execution>
-					    <id>write</id>
+						<id>write</id>
 						<phase>initialize</phase>
 						<goals>
 							<goal>write-project-properties</goal>
 						</goals>
 						<configuration>
-						    <outputFile>./src/main/webapp/config.properties</outputFile>
+							<outputFile>./src/main/webapp/config.properties</outputFile>
 						</configuration>
 					</execution>
 				</executions>

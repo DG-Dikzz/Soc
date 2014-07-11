@@ -12,11 +12,9 @@
 		<intercept-url pattern="/api/*" access="isAuthenticated()" />
 	</http>
 
-	<authentication-manager>
-		<authentication-provider>
-			<user-service>
-				<user name="dikzz" password="1111" authorities="ROLE_USER" />
-			</user-service>
+	<beans:bean id="authanticationService" class="com.dikzz.soc.AuthenticationService" />
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="authanticationService">
 		</authentication-provider>
 	</authentication-manager>
 
