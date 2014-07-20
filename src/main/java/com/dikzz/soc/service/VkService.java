@@ -48,32 +48,4 @@ public class VkService {
 		vkManager.setAccessCode(code);
 		return Response.ok(Response.Status.OK).build();
 	}
-
-	/*
-	 * @GET
-	 * 
-	 * @Path("/groups")
-	 * 
-	 * @Produces(MediaType.APPLICATION_JSON) public List<GroupDto>
-	 * getGroups(@QueryParam("query") String query,
-	 * 
-	 * @QueryParam("offset") Integer offset,
-	 * 
-	 * @QueryParam("count") Integer count) { List<GroupDto> groups =
-	 * vkManager.getGroups(new GroupRequestBuilder(
-	 * Strings.nullToEmpty(query)).setOffset(offset).setCount(count) .build());
-	 * return groups; }
-	 */
-
-	/*
-	 * @GET
-	 * 
-	 * @Path("/allGroups")
-	 * 
-	 * @Produces(MediaType.APPLICATION_JSON) public List<SocialCommunity<?>>
-	 * getGroups() { List<SocialCommunity<?>> list = new
-	 * ArrayList<SocialCommunity<?>>(); GroupDto dto = new GroupDto();
-	 * dto.setName("this is description"); dto.setScreen_name("this is name");
-	 * list.add(CommunityType.VK.getInstance(dto)); return list; }
-	 */
 }

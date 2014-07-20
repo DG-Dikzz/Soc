@@ -1,4 +1,4 @@
-package com.dikzz.soc.dto.vk.groups;
+package com.dikzz.soc.manager.external_service.dto.vk.groups;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;

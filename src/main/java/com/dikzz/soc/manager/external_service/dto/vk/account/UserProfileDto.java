@@ -1,4 +1,4 @@
-package com.dikzz.soc.dto.vk.account;
+package com.dikzz.soc.manager.external_service.dto.vk.account;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;

@@ -18,7 +18,9 @@ import org.springframework.social.twitter.api.TwitterProfile;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 import org.springframework.stereotype.Repository;
 
+import com.dikzz.soc.dto.api.SocialAccessStatus;
 import com.dikzz.soc.dto.api.SocialCommunity;
+import com.dikzz.soc.dto.api.SocialAccessStatus.SocialAccessState;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -102,5 +104,16 @@ public class TwitterManager implements SocialManager {
 			lastUsersResponseSnapshot.addAll(ids);
 		}
 		return result;
+	}
+	
+	@Override
+	public SocialAccessStatus getAccessStatus() {
+		SocialAccessState state = null;
+		if (connection != null && connection.test()) {
+			state = SocialAccessState.ACCESSIBLE;
+		} else {
+			state = SocialAccessState.INACCESSIBLE;
+		}
+		return new SocialAccessStatus(state, CommunityType.TWITTER);
 	}
 }

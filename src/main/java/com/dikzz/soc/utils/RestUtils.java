@@ -17,7 +17,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.dikzz.soc.dto.vk.ResponseDto;
+import com.dikzz.soc.manager.external_service.dto.vk.ResponseDto;
 import com.dikzz.soc.request.vk.GroupRequestBuilder;
 import com.dikzz.soc.request.vk.GroupRequestBuilder.GroupRequest.GroupType;
 import com.google.common.base.Function;

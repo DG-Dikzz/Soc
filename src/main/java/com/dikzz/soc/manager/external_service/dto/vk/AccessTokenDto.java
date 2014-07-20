@@ -1,4 +1,4 @@
-package com.dikzz.soc.dto.vk;
+package com.dikzz.soc.manager.external_service.dto.vk;
 
 import java.text.MessageFormat;
 

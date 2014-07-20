@@ -10,12 +10,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.dikzz.soc.dto.api.SocialAccessStatus;
 import com.dikzz.soc.dto.api.SocialCommunity;
-import com.dikzz.soc.dto.vk.AccessTokenDto;
-import com.dikzz.soc.dto.vk.ResponseDto;
-import com.dikzz.soc.dto.vk.account.UserProfileDto;
-import com.dikzz.soc.dto.vk.groups.GroupDto;
-import com.dikzz.soc.dto.vk.groups.GroupsSearchDto;
+import com.dikzz.soc.dto.api.SocialAccessStatus.SocialAccessState;
+import com.dikzz.soc.manager.external_service.dto.vk.AccessTokenDto;
+import com.dikzz.soc.manager.external_service.dto.vk.ResponseDto;
+import com.dikzz.soc.manager.external_service.dto.vk.account.UserProfileDto;
+import com.dikzz.soc.manager.external_service.dto.vk.groups.GroupDto;
+import com.dikzz.soc.manager.external_service.dto.vk.groups.GroupsSearchDto;
 import com.dikzz.soc.request.vk.GroupRequestBuilder;
 import com.dikzz.soc.request.vk.GroupRequestBuilder.GroupRequest;
 import com.dikzz.soc.utils.RestUtils;
@@ -126,5 +128,10 @@ public class VkManager implements SocialManager {
 
 					}
 				});
+	}
+	
+	@Override
+	public SocialAccessStatus getAccessStatus() {
+		return new SocialAccessStatus(SocialAccessState.INACCESSIBLE, CommunityType.VK);
 	}
 }

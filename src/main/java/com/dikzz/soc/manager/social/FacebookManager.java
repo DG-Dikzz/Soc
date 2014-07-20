@@ -16,6 +16,8 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Repository;
 
+import com.dikzz.soc.dto.api.SocialAccessStatus;
+import com.dikzz.soc.dto.api.SocialAccessStatus.SocialAccessState;
 import com.dikzz.soc.dto.api.SocialCommunity;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -78,5 +80,16 @@ public class FacebookManager implements SocialManager {
 
 					}
 				});
+	}
+
+	@Override
+	public SocialAccessStatus getAccessStatus() {
+		SocialAccessState state = null;
+		if (connection != null && connection.test()) {
+			state = SocialAccessState.ACCESSIBLE;
+		} else {
+			state = SocialAccessState.INACCESSIBLE;
+		}
+		return new SocialAccessStatus(state, CommunityType.FACEBOOK);
 	}
 }

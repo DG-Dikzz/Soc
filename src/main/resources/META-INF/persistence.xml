@@ -6,9 +6,8 @@
 	version="2.0">
 
 	<persistence-unit name="${hibernate.persistence.unit.name}" transaction-type="RESOURCE_LOCAL">
-		<jta-data-source>${database.jndi.name}</jta-data-source>
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<jta-data-source>${database.jndi.name}</jta-data-source>
 		<class>com.dikzz.soc.model.TestTable</class>
 		<properties>
 		    <property name="hibernate.archive.autodetection" value="class, hbm"/>

@@ -30,14 +30,6 @@ public class FacebookService {
 		facebookManager = (FacebookManager) communityManagerConfiguration.getSocialManager(CommunityType.FACEBOOK);
 	}
 
-	/*@Autowired
-	private CommunityManagerConfiguration socialManagerConfiguration;
-	
-	@PostConstruct
-	private void getManager() {
-		
-	}*/
-
 	@GET
 	public Response facebookAuthorization(@QueryParam("code") String code) {
 		if (code != null) {
@@ -52,15 +44,4 @@ public class FacebookService {
 			}
 		}
 	}
-
-	/*
-	 * @GET
-	 * 
-	 * @Path("/groups")
-	 * 
-	 * @Produces(MediaType.APPLICATION_JSON) public List<Group>
-	 * getGroups(@QueryParam("query") String query, @QueryParam("offset")
-	 * Integer offset, @QueryParam("count") Integer count) { return
-	 * facebookManager.getGroups(query, offset, count); }
-	 */
 }

@@ -2,7 +2,7 @@ package com.dikzz.soc.dto.api;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.dikzz.soc.dto.vk.groups.GroupDto;
+import com.dikzz.soc.manager.external_service.dto.vk.groups.GroupDto;
 import com.dikzz.soc.manager.social.CommunityType;
 
 public class VkCommunity implements SocialCommunity<GroupDto> {

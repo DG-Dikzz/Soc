@@ -6,13 +6,16 @@ import java.net.URISyntaxException;
 import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dikzz.soc.CommunityManagerConfiguration;
+import com.dikzz.soc.dto.api.SocialAccessStatus;
 import com.dikzz.soc.manager.social.CommunityType;
 import com.dikzz.soc.manager.social.TwitterManager;
 
@@ -31,6 +34,7 @@ public class TwitterService {
 	}
 
 	@GET
+	@Produces(MediaType.TEXT_HTML)
 	public Response twitterAuthorization(
 			@QueryParam("oauth_token") String oAuthToken,
 			@QueryParam("oauth_verifier") String oAuthVerifier) {
@@ -46,18 +50,4 @@ public class TwitterService {
 			}
 		}
 	}
-
-	/*
-	 * @GET
-	 * 
-	 * @Path("/groups")
-	 * 
-	 * @Produces(MediaType.APPLICATION_JSON) public List<TwitterProfile>
-	 * getGroups(@QueryParam("query") String query,
-	 * 
-	 * @QueryParam("offset") Integer offset,
-	 * 
-	 * @QueryParam("count") Integer count) { List<TwitterProfile> groups =
-	 * twitterManager.getProfiles(query, offset, count); return groups; }
-	 */
 }
