@@ -1,26 +1,16 @@
 package com.dikzz.soc.manager.external_service.dto.vk;
 
-import java.text.MessageFormat;
-
-import org.codehaus.jackson.annotate.JsonProperty;
+import java.util.Date;
 
 public class AccessTokenDto {
-	@JsonProperty(value = "access_token")
+	
+	public final static String ACCESS_TOKEN_PARAMETER = "access_token";
+	public final static String EXPIRES_IN_PARAMETER = "expires_in";
+	public final static String USER_ID_PARAMETER = "user_id";
+	
 	private String accessToken;
-	@JsonProperty(value = "expires_in")
-	private String expiresIn;
-	@JsonProperty(value = "user_id")
+	private Date exparationDate;
 	private String userId;
-
-	public AccessTokenDto() {
-
-	}
-
-	public AccessTokenDto(String accessToken, String expiresIn, String userId) {
-		this.accessToken = accessToken;
-		this.expiresIn = expiresIn;
-		this.userId = userId;
-	}
 
 	public String getAccessToken() {
 		return accessToken;
@@ -28,14 +18,6 @@ public class AccessTokenDto {
 
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
-	}
-
-	public String getExpiresIn() {
-		return expiresIn;
-	}
-
-	public void setExpiresIn(String expiresIn) {
-		this.expiresIn = expiresIn;
 	}
 
 	public String getUserId() {
@@ -46,11 +28,11 @@ public class AccessTokenDto {
 		this.userId = userId;
 	}
 
-	@Override
-	public String toString() {
-		return MessageFormat.format(
-				"{0}: accessToken = {1}, expiresIn = {2}, userId = {3}",
-				this.getClass().getName(), this.accessToken,
-				this.expiresIn, this.userId);
+	public Date getExparationDate() {
+		return exparationDate;
+	}
+
+	public void setExparationDate(Date createDate) {
+		this.exparationDate = createDate;
 	}
 }

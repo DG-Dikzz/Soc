@@ -2,6 +2,7 @@ package com.dikzz.soc.manager.social;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
@@ -11,11 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.dikzz.soc.dto.api.SocialAccessStatus;
-import com.dikzz.soc.dto.api.SocialCommunity;
 import com.dikzz.soc.dto.api.SocialAccessStatus.SocialAccessState;
+import com.dikzz.soc.dto.api.SocialCommunity;
 import com.dikzz.soc.manager.external_service.dto.vk.AccessTokenDto;
 import com.dikzz.soc.manager.external_service.dto.vk.ResponseDto;
-import com.dikzz.soc.manager.external_service.dto.vk.account.UserProfileDto;
 import com.dikzz.soc.manager.external_service.dto.vk.groups.GroupDto;
 import com.dikzz.soc.manager.external_service.dto.vk.groups.GroupsSearchDto;
 import com.dikzz.soc.request.vk.GroupRequestBuilder;
@@ -41,40 +41,14 @@ public class VkManager implements SocialManager {
 	private final static String VK_API_VERSION = "5.14";
 	private final static String AUTH_URL = "https://oauth.vk.com/authorize?client_id={0}&scope={1}&redirect_uri={2}&display={3}&v={4}&response_type=token";
 	private final static String VK_METHOD_REQUEST_PATTERN = "https://api.vk.com/method/{0}?{1}{2}access_token={3}";
-	private final static String ACCOUNT_GET_PROFILE_INFO = "account.getProfileInfo";
 
 	public String getAuthorizationUrl() {
 		return MessageFormat.format(AUTH_URL, vkAppId, VK_SCOPE_ALL,
 				CALLBACK_URL, VK_AUTHORIZATION_DISPLAY, VK_API_VERSION);
 	}
 
-	public void setAccessCode(String accessCode) {
-		// TODO set also other properties
-		accessTokenDto = new AccessTokenDto();
-		accessTokenDto.setAccessToken(accessCode);
-	}
-
-	public UserProfileDto getUserProfile() {
-
-		String requestUrl = getVkMethodRequest(ACCOUNT_GET_PROFILE_INFO, "");
-
-		return RestUtils.request(requestUrl,
-				new ResponseHandler<UserProfileDto>() {
-
-					@Override
-					public UserProfileDto handle(ResponseDto responseDto)
-							throws JsonParseException, JsonMappingException,
-							IOException {
-						UserProfileDto userProfileDto = null;
-						if (!responseDto.hasError()) {
-							ObjectMapper objectMapper = new ObjectMapper();
-							userProfileDto = objectMapper.readValue(
-									responseDto.getResponce(),
-									UserProfileDto.class);
-						}
-						return userProfileDto;
-					}
-				});
+	public void setAccessToken(AccessTokenDto accessTokenDto) {
+		this.accessTokenDto = accessTokenDto;
 	}
 
 	private List<GroupDto> getGroups(String request) {
@@ -132,6 +106,12 @@ public class VkManager implements SocialManager {
 	
 	@Override
 	public SocialAccessStatus getAccessStatus() {
-		return new SocialAccessStatus(SocialAccessState.INACCESSIBLE, CommunityType.VK);
+		SocialAccessState state = null;
+		if (accessTokenDto != null && Calendar.getInstance().getTime().before(accessTokenDto.getExparationDate())) {
+			state = SocialAccessState.ACCESSIBLE;
+		} else {
+			state = SocialAccessState.INACCESSIBLE;
+		}
+		return new SocialAccessStatus(state, CommunityType.VK);
 	}
 }
